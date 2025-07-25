@@ -2,7 +2,7 @@
 export default function Home() {
   return (
     <>
-      <div className="center h1">
+      <div className="flex-center h-screen ">
         <h1 className="text-brand">this is the Storage you </h1>
       </div>
     </>
