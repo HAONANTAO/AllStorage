@@ -3,7 +3,8 @@ import Image from 'next/image'
 const Layout = ({children}:{children:React.ReactNode}) => {
   return (
     <div className="flex min-h-screen">
-      {/* hidden for any size except large  */}
+      {/* large screen" left/right side, non-large: one page with icon on top */}
+
       {/* left side  */}
       <section className=" hidden w-1/2 items-center justify-center bg-brand p-10 lg:flex ">
         <div className=" max-h-[800px] max-w-[480px] flex-col justify-center space-y-12 ">
