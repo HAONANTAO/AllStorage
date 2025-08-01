@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image"
 import Link from "next/link"
 import { createAccount } from "@/lib/actions/user.actions"
+import OTPModal from "./OTPModal"
 
 
 type FormType = "sign-in" | "sign-up"
@@ -33,13 +34,13 @@ const authSchema = (formType: FormType) => {
 const AuthForm = ({ type }: { type: FormType }) => {
 const [isLoading,setIsLoading] = useState(false)
 const [errorMessage,setErrorMessage ]=useState("")
-const [accountId,setAccountId] = useState(null)
+const [accountId,setAccountId] = useState("")
 const formSchema = authSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: "",
-      email:""
+      fullName: "Aa",
+      email:"22"
     },
   });
 
@@ -142,7 +143,11 @@ const formSchema = authSchema(type);
           </div>
         </form>
       </Form>
-      {/* TODO:OTP  */}
+
+      {/* OTP verification */}
+      {true && (
+        <OTPModal email={form.getValues("email")} accountId={accountId} />
+      )}
     </>
   );
 };
