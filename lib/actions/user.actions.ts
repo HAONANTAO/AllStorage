@@ -61,6 +61,7 @@ export const createAccount = async ({ fullName, email }: { fullName:string, emai
   return parseStringify({ accountId });
 };
 
+// 用账号ID + OTP（一次性密码）尝试登录，看是否成功 → 成功就发放 session（登录凭证）
 export const verifySecret =async({accountId,password}:{accountId:string,password:string})=>{
   try {
     const { account } = await createAdminClient();

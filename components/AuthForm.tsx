@@ -39,8 +39,8 @@ const formSchema = authSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: "Aa",
-      email:"22"
+      fullName: "",
+      email:""
     },
   });
 
