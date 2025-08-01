@@ -6,6 +6,7 @@
 import { ID, Query } from "node-appwrite";
 import { appwriteConfig } from "../appwrite/config";
 import { createAdminClient } from "../appwrite";
+import { parseStringify } from "../utils";
 
 const getUserByEmail=async (email:string)=>{
   const {databases} = await createAdminClient();
@@ -33,16 +34,15 @@ const sendEmailOTP=async(email:string)=>{
 
 }
 // sign up
-const createAccount = async ({ fullName, email }: { fullName:string, email:string }) => {
+export const createAccount = async ({ fullName, email }: { fullName:string, email:string }) => {
   const existingUser = await getUserByEmail(email);
 
   const accountId = await sendEmailOTP(email);
 
-
-  if(!accountId) throw new Error("Failed to send OTP");
-  if(!existingUser){
+  if (!accountId) throw new Error("Failed to send OTP");
+  if (!existingUser) {
     // create one
-    const {databases} = await createAdminClient();
+    const { databases } = await createAdminClient();
     await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.usersCollectionId,
@@ -50,11 +50,13 @@ const createAccount = async ({ fullName, email }: { fullName:string, email:strin
       {
         fullName,
         email,
-        avatar:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2uLl8zBoK0_iM5pNwJAC8hQ2f68YKtlgc7Q&s",
+        avatar:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2uLl8zBoK0_iM5pNwJAC8hQ2f68YKtlgc7Q&s",
         accountId,
-      }
-    )
+      },
+    );
   }
+  // clean complex object, return safe data
   return parseStringify({ accountId });
 };
 
