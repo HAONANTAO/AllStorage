@@ -1,32 +1,39 @@
+"use client"
 import React, { useState } from 'react'
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+
 } from "@/components/ui/alert-dialog";
 import {
   InputOTP,
   InputOTPGroup,
-  InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import Image from 'next/image';
 import { Button } from './ui/button';
+import { verifySecret,sendEmailOTP } from '@/lib/actions/user.actions';
+import { useRouter } from 'next/navigation';
 const OTPModal = ({email,accountId}:{email:string,accountId:string}) => {
   const [isOpen,setIsOpen] = useState(true)
   const [password,setPassword] = useState("")
   const [isLoading,setIsLoading] = useState(false)
+  const router = useRouter()
   const handleSubmit = async(e:React.MouseEvent<HTMLButtonElement>)=>{
     e.preventDefault();
     setIsLoading(true)
     try {
-      // TODO:call Api to verify the OTP
+      // call Api to verify the OTP
+       const sessionId = await verifySecret({ accountId, password });
+      //  verify success
+       if(sessionId){
+        router.push("/")
+       }
     } catch (error) {
         console.log("Failed to Verify OTP",error)
     }finally{
@@ -35,6 +42,7 @@ const OTPModal = ({email,accountId}:{email:string,accountId:string}) => {
   }
   const handleResendOTP=async()=>{
     // call API to resend
+    await sendEmailOTP(email)
   }
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>

@@ -28,6 +28,7 @@ export const createSessionClient = async()=>{
 }
 
 // more auth, higher level
+// 保证调用者拿到的是干净的全新客户端实例，避免状态或连接被复用带来的副作用；
 export const createAdminClient = async ()=>{
   const client = new Client();
   client

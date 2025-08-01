@@ -145,7 +145,7 @@ const formSchema = authSchema(type);
       </Form>
 
       {/* OTP verification */}
-      {true && (
+      {accountId && (
         <OTPModal email={form.getValues("email")} accountId={accountId} />
       )}
     </>

@@ -7,6 +7,7 @@ import { ID, Query } from "node-appwrite";
 import { appwriteConfig } from "../appwrite/config";
 import { createAdminClient } from "../appwrite";
 import { parseStringify } from "../utils";
+import { cookies } from "next/headers";
 
 const getUserByEmail=async (email:string)=>{
   const {databases} = await createAdminClient();
@@ -23,7 +24,7 @@ const handleError = (error:unknown,message:string)=>{
 }
 
 // appwrite给发一个email一次性登录的OTP
-const sendEmailOTP=async(email:string)=>{
+export const sendEmailOTP=async(email:string)=>{
   const { account } = await createAdminClient();
   try {
     const session = await account.createEmailToken(ID.unique(),email)
@@ -60,3 +61,23 @@ export const createAccount = async ({ fullName, email }: { fullName:string, emai
   return parseStringify({ accountId });
 };
 
+export const verifySecret =async({accountId,password}:{accountId:string,password:string})=>{
+  try {
+    const { account } = await createAdminClient();
+    const session = await account.createSession(accountId, password);
+
+    //  将会话的 secret（凭证）存入浏览器的 cookie，配置了一些安全选项
+    (await cookies()).set("appwrite-session", session.secret, {
+      path: "/", // cookie 在根路径有效
+      httpOnly: true, // 只能被服务器访问，前端 JS 无法访问，防止 XSS
+      sameSite: "strict", // 防止跨站请求伪造 CSRF
+      secure: true, // 仅在 HTTPS 连接下传输 cookie
+    });
+    //  返回一个清理过的对象，只含 sessionId，避免传递复杂对象
+    return parseStringify({ sessionId: session.$id });
+  } catch (error) {
+    handleError(error,"Failed to verify OTP");
+    
+  }
+ 
+}
