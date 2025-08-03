@@ -8,6 +8,7 @@ import { appwriteConfig } from "../appwrite/config";
 import { createAdminClient } from "../appwrite";
 import { parseStringify } from "../utils";
 import { cookies } from "next/headers";
+import { avatarPlaceholderUrl } from "@/constants";
 
 const getUserByEmail=async (email:string)=>{
   const {databases} = await createAdminClient();
@@ -52,7 +53,7 @@ export const createAccount = async ({ fullName, email }: { fullName:string, emai
         fullName,
         email,
         avatar:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2uLl8zBoK0_iM5pNwJAC8hQ2f68YKtlgc7Q&s",
+         {avatarPlaceholderUrl},
         accountId,
       },
     );
