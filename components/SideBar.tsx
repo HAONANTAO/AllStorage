@@ -5,8 +5,14 @@ import Image from "next/image"
 import { avatarPlaceholderUrl, navItems } from '@/constants'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-const SideBar = () => {
-  const pathname = usePathname()
+
+interface Props{
+  fullName:string,
+  avatar:string,
+  email:string
+}
+const SideBar = ({ fullName,email,avatar}:Props) => {
+  const pathname = usePathname();
   return (
     <aside className="sidebar">
       <Link href="/">
@@ -35,26 +41,49 @@ const SideBar = () => {
                   "sidebar-nav-item",
                   pathname === url && "shad-active",
                 )}>
-                <Image src={icon} alt={name} width="24" height="24" className={cn("nav-icon",pathname===url && "nav-icon-active")}/>
-                <p className='hidden lg:block '>{name}</p>
+                <Image
+                  src={icon}
+                  alt={name}
+                  width="24"
+                  height="24"
+                  className={cn(
+                    "nav-icon",
+                    pathname === url && "nav-icon-active",
+                  )}
+                />
+                <p className="hidden lg:block ">{name}</p>
               </li>
             </Link>
           ))}
         </ul>
       </nav>
 
-      <Image src="/assets/images/files-2.png" alt="logo" width={506} height={418} className="w-full"/>
+      <Image
+        src="/assets/images/files-2.png"
+        alt="logo"
+        width={506}
+        height={418}
+        className="w-full"
+      />
 
+      {/* personal info */}
       {/* TODO:Default avatar */}
-      <div className="sidebar-user-info"> 
-        <Image src={avatarPlaceholderUrl} alt="Avatar" width={44} height={44} className="sidebar-user-avatar"/>
+      <div className="sidebar-user-info">
+        <Image
+          src={avatarPlaceholderUrl}
+          alt="Avatar"
+          width={44}
+          height={44}
+          className="sidebar-user-avatar"
+        />
+
         <div className="hidden lg:block">
-          {/* <p className="subtitle-2 capitalize">{fullName}</p> */}
+          <p className="subtitle-2 capitalize">{fullName}</p>
+          <p className="caption">{email}</p>
         </div>
       </div>
-
     </aside>
   );
-}
+};
 
 export default SideBar

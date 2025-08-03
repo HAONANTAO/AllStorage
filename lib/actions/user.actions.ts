@@ -5,7 +5,7 @@
 
 import { ID, Query } from "node-appwrite";
 import { appwriteConfig } from "../appwrite/config";
-import { createAdminClient } from "../appwrite";
+import { createAdminClient, createSessionClient } from "../appwrite";
 import { parseStringify } from "../utils";
 import { cookies } from "next/headers";
 import { avatarPlaceholderUrl } from "@/constants";
@@ -52,8 +52,7 @@ export const createAccount = async ({ fullName, email }: { fullName:string, emai
       {
         fullName,
         email,
-        avatar:
-         {avatarPlaceholderUrl},
+        avatar: avatarPlaceholderUrl,
         accountId,
       },
     );
@@ -82,4 +81,18 @@ export const verifySecret =async({accountId,password}:{accountId:string,password
     
   }
  
+}
+// 提取session的user
+export const getCurrentUser = async()=>{
+  const {databases,account} = await createSessionClient();
+  const result = await account.get();
+
+  const user = await databases.listDocuments(
+    appwriteConfig.databaseId,
+    appwriteConfig.usersCollectionId,
+    [Query.equal("accountId",[result.$id])]
+  )
+
+  if(user.total<=0) return null
+  return parseStringify(user.documents[0])
 }
