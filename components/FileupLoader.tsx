@@ -1,11 +1,7 @@
 import React from 'react'
 
 const FileupLoader = () => {
-  return (
-    <div>
-      
-    </div>
-  )
+  return <div>FileupLoader</div>;
 }
 
 export default FileupLoader
