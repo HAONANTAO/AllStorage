@@ -17,6 +17,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { createAccount, signInUser } from "@/lib/actions/user.actions"
 import OTPModal from "./OTPModal"
+import { useRouter } from "next/navigation";
+
 
 
 type FormType = "sign-in" | "sign-up"
@@ -36,6 +38,7 @@ const [isLoading,setIsLoading] = useState(false)
 const [errorMessage,setErrorMessage ]=useState("")
 const [accountId,setAccountId] = useState("")
 const formSchema = authSchema(type);
+const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,7 +58,18 @@ const formSchema = authSchema(type);
               email: values.email,
             })
           : await signInUser({ email: values.email });
-      setAccountId(user.accountId);
+     
+      // signup and existed already
+      if (user.error) {
+        setErrorMessage(user.error);
+        // ⚠️ 延迟 2 秒后跳转，给用户一点时间阅读
+        setTimeout(() => {
+          router.push("/sign-in");
+        }, 2000);
+        return;
+      } else {
+        setAccountId(user.accountId);
+      }
     } catch {
       setErrorMessage("Failed to create account,Please Try Again!")
     }finally{

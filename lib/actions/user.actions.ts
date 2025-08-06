@@ -36,14 +36,19 @@ export const sendEmailOTP=async(email:string)=>{
   }
 
 }
-// sign up
+
+// sign up function
 export const createAccount = async ({ fullName, email }: { fullName:string, email:string }) => {
   const existingUser = await getUserByEmail(email);
-
+  if (existingUser) {
+    return { error: "User existed,redirect to sign-in" };
+  }
   const accountId = await sendEmailOTP(email);
 
   if (!accountId) throw new Error("Failed to send OTP");
-  if (!existingUser) {
+
+
+
     // create one
     const { databases } = await createAdminClient();
     await databases.createDocument(
@@ -57,10 +62,9 @@ export const createAccount = async ({ fullName, email }: { fullName:string, emai
         accountId,
       },
     );
+    return parseStringify({ accountId });
   }
-  // clean complex object, return safe data
-  return parseStringify({ accountId });
-};
+
 
 // 用账号ID + OTP（一次性密码）尝试登录，看是否成功 → 成功就发放 session（登录凭证）
 export const verifySecret =async({accountId,password}:{accountId:string,password:string})=>{
