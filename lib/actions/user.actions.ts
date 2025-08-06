@@ -104,10 +104,10 @@ export const signOutUser = async()=>{
     // Delete the current session
     await account.deleteSession("current");
 
-      ((await cookies()).delete("appwrite-session"))
+    (await cookies()).delete("appwrite-session");
+    // ✅ 只在成功时跳转
+    redirect("/sign-in");
   } catch (error) {
     handleError(error,"Failed to sign out user")
-  }finally{
-    redirect("/sign-in")
   }
 }
