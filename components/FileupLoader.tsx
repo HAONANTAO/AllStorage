@@ -5,21 +5,38 @@ import { Button } from "./ui/button";
 import Image from "next/image";
 import { cn, convertFileToUrl, getFileType } from "@/lib/utils";
 import Thumbnail from "./Thumbnail";
+import { MAX_FILE_SIZE } from "@/constants";
+import { useToast } from "@/hooks/use-toast";
 interface Props {
   ownerId: string;
   accountId: string;
   className?: string;
 }
 const FileupLoader = ({ownerId,accountId,className}:Props) => {
+  const {toast} =useToast()
   const [files,setFiles] = useState<File[]>([])
-  const handleRemoveFile =(e:React.MouseEvent,fileName:string)=>{
-    // 不传播下去点击事件
+  const handleRemoveFile =(e:React.MouseEvent<HTMLImageElement,MouseEvent>,fileName:string)=>{
+    // 不传播下去点击事件冒泡
     e.stopPropagation()
     setFiles((prevfiles)=>prevfiles.filter((file)=>file.name!==fileName))
   }
   const onDrop = useCallback( async(acceptedFiles:File[]) => {
     // Do something with the files
     setFiles(acceptedFiles);
+    const uploadPromise = acceptedFiles.map(async(file)=>{
+      // exceed the max size
+      if(file.size>MAX_FILE_SIZE){
+        setFiles((prevfiles)=>prevfiles.filter((f)=>f.name!==file.name))
+        return toast({
+         
+          description:(<p className="body-2 text-white">
+            <span className="font-semibold">
+              {file.name} is too large, Max file size is 50MB
+            </span>
+          </p>),className:"error-toast"
+        });
+      }
+    })
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
@@ -66,11 +83,7 @@ const FileupLoader = ({ownerId,accountId,className}:Props) => {
       })}
       </ul>}
 
-      {isDragActive ? (
-        <p>Drop the files here ...</p>
-      ) : (
-        <p>Drag drop some files here, or click to select files</p>
-      )}
+      
     </div>
   );
 }

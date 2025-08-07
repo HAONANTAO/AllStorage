@@ -4,7 +4,8 @@ import SideBar from '@/components/SideBar'
 import { getCurrentUser } from '@/lib/actions/user.actions'
 import { redirect } from 'next/navigation'
 import React from 'react'
-
+import { Toaster } from "@/components/ui/toaster";
+ 
 const layout = async ({children}:{children:React.ReactNode}) => {
   const currentUser = await getCurrentUser();
   if(! currentUser) return redirect("/sign-in")
@@ -12,10 +13,11 @@ const layout = async ({children}:{children:React.ReactNode}) => {
     <main className="flex h-screen">
       <SideBar {...currentUser}></SideBar>
       <section className="flex h-full flex-1 flex-col ">
-        <MobileNavigation {...currentUser} ></MobileNavigation>
+        <MobileNavigation {...currentUser}></MobileNavigation>
         <Header></Header>
         <div className="main-content">{children}</div>
       </section>
+      <Toaster />
     </main>
   );
 }
