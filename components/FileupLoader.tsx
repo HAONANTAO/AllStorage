@@ -11,10 +11,15 @@ interface Props {
   className?: string;
 }
 const FileupLoader = ({ownerId,accountId,className}:Props) => {
-  const [files,SetFiles] = useState<File[]>([])
+  const [files,setFiles] = useState<File[]>([])
+  const handleRemoveFile =(e:React.MouseEvent,fileName:string)=>{
+    // 不传播下去点击事件
+    e.stopPropagation()
+    setFiles((prevfiles)=>prevfiles.filter((file)=>file.name!==fileName))
+  }
   const onDrop = useCallback( async(acceptedFiles:File[]) => {
     // Do something with the files
-    SetFiles(acceptedFiles)
+    setFiles(acceptedFiles);
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
@@ -39,8 +44,23 @@ const FileupLoader = ({ownerId,accountId,className}:Props) => {
           <li key={`${file.name}-${index}`} className="uploader-preview-item">
             <div className="flex items-center gap-3">
               {/* 缩略图组件 */}
-              <Thumbnail  type={type} extension={extension} url={convertFileToUrl(file)}/>
+              <Thumbnail
+                type={type}
+                extension={extension}
+                url={convertFileToUrl(file)}
+              />
+              <div className="preview-item-name">
+                {file.name}
+                {/* 加载条loader */}
+                <Image
+                  src="/assets/icons/file-loader.gif"
+                  alt="loader"
+                  width={80}
+                  height={26}
+                />
+              </div>
             </div>
+            <Image src="/assets/icons/remove.svg" width={24} height={24} alt="remove" onClick={(e)=>handleRemoveFile(e,file.name)}/>
           </li>
         );
       })}
