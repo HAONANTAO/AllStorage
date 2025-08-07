@@ -3,7 +3,7 @@ import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Button } from "./ui/button";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, getFileType } from "@/lib/utils";
 interface Props {
   ownerId: string;
   accountId: string;
@@ -11,8 +11,9 @@ interface Props {
 }
 const FileupLoader = ({ownerId,accountId,className}:Props) => {
   const [files,SetFiles] = useState<File[]>([])
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback( async(acceptedFiles:File[]) => {
     // Do something with the files
+    SetFiles(acceptedFiles)
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
@@ -33,6 +34,14 @@ const FileupLoader = ({ownerId,accountId,className}:Props) => {
       <h4 className="h4 text-light-100">Uploading</h4>
       {files.map((file,index)=>{
         const {type,extension} = getFileType(file.name)
+        return (
+          <li key={`${file.name}-${index}`} className="uploader-preview-item">
+            <div className="flex items-center gap-3">
+              {/* 缩略图组件 */}
+              <Thumbnail file={file} />
+            </div>
+          </li>
+        );
       })}
       </ul>}
 
@@ -46,7 +55,4 @@ const FileupLoader = ({ownerId,accountId,className}:Props) => {
 }
 
 export default FileupLoader
-function useState<T>(arg0: {}): [any, any] {
-  throw new Error("Function not implemented.");
-}
 
