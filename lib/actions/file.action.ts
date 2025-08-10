@@ -35,7 +35,7 @@ export const uploadFile = async ({
       ID.unique(),
       inputFile,
     );
-
+    console.log("test",bucketFile.$id);
     const fileDocument = {
       type: getFileType(bucketFile.name).type,
       name: bucketFile.name,
@@ -47,7 +47,7 @@ export const uploadFile = async ({
       users: [],
       bucketFileId: bucketFile.$id,
     };
-
+   
     const newFile = await databases
       .createDocument(
         appwriteConfig.databaseId,
@@ -67,6 +67,7 @@ export const uploadFile = async ({
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createQueries= (currentUser:any)=>{
   const queries = [
     // 查找 owner 等于这个用户 ID 或者 users 包含这个用户的邮箱 的文档。
@@ -94,7 +95,7 @@ export const getFiles = async()=>{
       appwriteConfig.filesCollectionId,
       queries,
     )
-    console.log(files);
+    // console.log(files);
     return parseStringify(files)
   }
   catch(error){

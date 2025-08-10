@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 
 // keep data sage
 export const createSessionClient = async()=>{
+
   const client = new Client()
   client
     .setEndpoint(appwriteConfig.endpointUrl)

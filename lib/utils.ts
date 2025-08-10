@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { appwriteConfig } from "./appwrite/config";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -176,14 +177,36 @@ export const getFileIcon = (
 // APPWRITE URL UTILS
 // Construct appwrite file URL - https://appwrite.io/docs/apis/rest#images
 export const constructFileUrl = (bucketFileId: string) => {
-  return `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.NEXT_PUBLIC_APPWRITE_BUCKET}/files/${bucketFileId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`;
+  if (!appwriteConfig.projectId) {
+    throw new Error("Missing Appwrite project ID");
+  }
+  if (!appwriteConfig.endpointUrl) {
+    throw new Error("Missing Appwrite endpoint URL");
+  }
+  if (!appwriteConfig.bucketId) {
+    throw new Error("Missing Appwrite bucket ID");
+  }
+
+  return `${appwriteConfig.endpointUrl}/storage/buckets/${appwriteConfig.bucketId}/files/${bucketFileId}/view?project=${appwriteConfig.projectId}`;
 };
 
 export const constructDownloadUrl = (bucketFileId: string) => {
-  return `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.NEXT_PUBLIC_APPWRITE_BUCKET}/files/${bucketFileId}/download?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`;
+
+  if (!process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT) {
+    throw new Error("Missing Appwrite endpoint URL");
+  }
+  if (!process.env.NEXT_PUBLIC_APPWRITE_BUCKET) {
+    throw new Error("Missing Appwrite bucket ID");
+  }
+  if (!process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID) {
+    throw new Error("Missing Appwrite project ID");
+  }
+  return `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.NEXT_PUBLIC_APPWRITE_BUCKET}/files/${bucketFileId}/download?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`;
 };
 
+
 // DASHBOARD UTILS
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getUsageSummary = (totalSpace: any) => {
   return [
     {
