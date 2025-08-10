@@ -19,15 +19,21 @@ import FileupLoader from './FileupLoader';
 import { signOutUser } from '@/lib/actions/user.actions';
 
 interface Props {
-  ownerId:string,
-  accountId:string,
+  $id: string;
+  accountId: string;
   fullName: string;
   avatar: string;
   email: string;
 }
-const MobileNavigation = ({ownerId,accountId,fullName,avatar,email}:Props) => {
+const MobileNavigation = ({
+  $id: ownerId,
+  accountId,
+  fullName,
+  avatar,
+  email,
+}: Props) => {
   const [open, setOpen] = useState(false);
-  const pathname=usePathname()
+  const pathname = usePathname();
   return (
     <header className="mobile-header">
       <Image
@@ -95,7 +101,9 @@ const MobileNavigation = ({ownerId,accountId,fullName,avatar,email}:Props) => {
           <Separator className="my-4 bg-light-200/20" />
 
           <div className="flex flex-col justify-between gap-5 pb-5">
-            <FileupLoader></FileupLoader>
+            <FileupLoader
+              ownerId={ownerId}
+              accountId={accountId}></FileupLoader>
             <Button
               type="submit"
               className="sign-out-button"
@@ -114,6 +122,6 @@ const MobileNavigation = ({ownerId,accountId,fullName,avatar,email}:Props) => {
       </Sheet>
     </header>
   );
-}
+};
 
 export default MobileNavigation

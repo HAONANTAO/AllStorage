@@ -7,12 +7,16 @@ import { cn, convertFileToUrl, getFileType } from "@/lib/utils";
 import Thumbnail from "./Thumbnail";
 import { MAX_FILE_SIZE } from "@/constants";
 import { useToast } from "@/hooks/use-toast";
+import { usePathname } from "next/navigation";
+import { uploadFile } from "@/lib/actions/file.action";
 interface Props {
   ownerId: string;
   accountId: string;
   className?: string;
 }
+// The core
 const FileupLoader = ({ownerId,accountId,className}:Props) => {
+  const path = usePathname();
   const {toast} =useToast()
   const [files,setFiles] = useState<File[]>([])
   const handleRemoveFile =(e:React.MouseEvent<HTMLImageElement,MouseEvent>,fileName:string)=>{
@@ -22,13 +26,15 @@ const FileupLoader = ({ownerId,accountId,className}:Props) => {
   }
   const onDrop = useCallback( async(acceptedFiles:File[]) => {
     // Do something with the files
+    // 上传文件细节
     setFiles(acceptedFiles);
+    // 一个个上传文件
     const uploadPromise = acceptedFiles.map(async(file)=>{
       // exceed the max size
       if(file.size>MAX_FILE_SIZE){
         setFiles((prevfiles)=>prevfiles.filter((f)=>f.name!==file.name))
         return toast({
-         
+          title:"File size too large",
           description:(<p className="body-2 text-white">
             <span className="font-semibold">
               {file.name} is too large, Max file size is 50MB
@@ -36,8 +42,15 @@ const FileupLoader = ({ownerId,accountId,className}:Props) => {
           </p>),className:"error-toast"
         });
       }
+      return uploadFile({file,ownerId,accountId,path}).then((uploadFile)=>{
+        if(uploadFile){
+          setFiles((prevfiles)=>prevfiles.filter((f)=>f.name!==file.name))
+        }
+      });
     })
-  }, []);
+    // 等全部上传完
+    await Promise.all(uploadPromise);
+  }, [ownerId,accountId,path]);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
