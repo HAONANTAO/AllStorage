@@ -3,9 +3,10 @@
 import { createAdminClient } from "../appwrite";
 import { InputFile } from "node-appwrite/file";
 import { appwriteConfig } from "../appwrite/config";
-import { ID } from "node-appwrite";
+import { ID, Query } from "node-appwrite";
 import { constructFileUrl, getFileType, parseStringify } from "../utils";
 import { revalidatePath } from "next/cache";
+import { getCurrentUser } from "./user.actions";
 
 const handleError = (error: unknown, message: string) => {
   console.log(error, message);
@@ -65,3 +66,38 @@ export const uploadFile = async ({
     handleError(error, "Failed to upload file");
   }
 };
+
+const createQueries= (currentUser:any)=>{
+  const queries = [
+    // 查找 owner 等于这个用户 ID 或者 users 包含这个用户的邮箱 的文档。
+    Query.or([
+      Query.equal("owner", currentUser.$id),
+      Query.contains("users", currentUser.email),
+    ]),
+  ];
+  // TODO:search sort limits...
+  return queries;
+}
+export const getFiles = async()=>{
+  const {databases} = await createAdminClient();
+  try{
+    const currentUser =await getCurrentUser();
+    if(!currentUser){
+      throw new Error("user not found");
+    }
+    // search query creation
+    const queries = createQueries(currentUser)
+    
+    // get files
+    const files = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      queries,
+    )
+    console.log(files);
+    return parseStringify(files)
+  }
+  catch(error){
+    handleError(error,"failed to getFiles from databases")
+  }
+}
