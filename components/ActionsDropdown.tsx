@@ -30,6 +30,16 @@ const ActionsDropdown = ({file}:{file:Models.Document}) => {
   const [isLoading,setIsLoading] = useState(false)
   const [name,setName] = useState(file.name)
 
+  // clean all states
+    const closeAllModals = ()=>{
+      setIsModelOpen(false)
+      setIsDropDownOpen(false)
+      setAction(null)
+      setName(file.name)
+      // for shared
+      // setEmail([])
+    }
+    const handleActions =async()=>{}
   // modal
   const renderDialogContent = ()=>{
     if(!action) return null
@@ -53,10 +63,18 @@ const ActionsDropdown = ({file}:{file:Models.Document}) => {
         {/* only those 3 has buttons */}
         {["rename", "delete", "share"].includes(value) && (
           <DialogFooter className="flex flex-col gap-3 md:flex-row ">
-            <Button>Cancel</Button>
-            <Button>
+            <Button onClick={closeAllModals}>Cancel</Button>
+            <Button onClick={handleActions}>
               <p className="capitalize">{value}</p>
-              {isLoading && (<Image src="/assets/icons/loader.svg" alt="loader" width="24" height="24" className='animate-spin'/>)}
+              {isLoading && (
+                <Image
+                  src="/assets/icons/loader.svg"
+                  alt="loader"
+                  width="24"
+                  height="24"
+                  className="animate-spin"
+                />
+              )}
             </Button>
           </DialogFooter>
         )}
