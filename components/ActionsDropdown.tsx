@@ -1,8 +1,5 @@
 "use client"
 import React, { useState } from 'react'
-import {
-  Dialog,
-} from "@/components/ui/dialog";
 import Image from 'next/image';
 import {
   DropdownMenu,
@@ -16,10 +13,56 @@ import { Models } from 'node-appwrite';
 import { actionsDropdownItems } from '@/constants';
 import Link from 'next/link';
 import { constructDownloadUrl } from '@/lib/utils';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from './ui/input';
+import { Button } from './ui/button';
 const ActionsDropdown = ({file}:{file:Models.Document}) => {
   const [isModelOpen,setIsModelOpen] = useState(false);
   const [isDropDownOpen,setIsDropDownOpen] = useState(false);
   const [action,setAction] = useState<ActionType | null>(null);
+  const [isLoading,setIsLoading] = useState(false)
+  const [name,setName] = useState(file.name)
+
+  // modal
+  const renderDialogContent = ()=>{
+    if(!action) return null
+    // click for sign the value into action
+    const {label,value} = action;
+    return (
+      <DialogContent className="shad-dialog button">
+        <DialogHeader className="flex flex-col gap-3">
+          <DialogTitle className="text-center text-light-100">
+            {label}
+          </DialogTitle>
+          {/* determine */}
+          {value === "rename" && (
+            <Input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          )}
+        </DialogHeader>
+        {/* only those 3 has buttons */}
+        {["rename", "delete", "share"].includes(value) && (
+          <DialogFooter className="flex flex-col gap-3 md:flex-row ">
+            <Button>Cancel</Button>
+            <Button>
+              <p className="capitalize">{value}</p>
+              {isLoading && (<Image src="/assets/icons/loader.svg" alt="loader" width="24" height="24" className='animate-spin'/>)}
+            </Button>
+          </DialogFooter>
+        )}
+      </DialogContent>
+    );
+  }
   return (
     <Dialog open={isModelOpen} onOpenChange={setIsModelOpen}>
       <DropdownMenu open={isDropDownOpen} onOpenChange={setIsDropDownOpen}>
@@ -53,7 +96,7 @@ const ActionsDropdown = ({file}:{file:Models.Document}) => {
                 }
               }
               key={actionItem.value}>
-                {/* 只有download点击直接可以下载 */}
+              {/* 只有download点击直接可以下载 */}
               {actionItem.value === "download" ? (
                 <Link
                   href={constructDownloadUrl(file.bucketFileId)}
@@ -82,6 +125,8 @@ const ActionsDropdown = ({file}:{file:Models.Document}) => {
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {renderDialogContent()}
     </Dialog>
   );
 }
