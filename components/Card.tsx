@@ -4,17 +4,18 @@ import React from 'react'
 import Thumbnail from './Thumbnail';
 import { convertFileSize } from '@/lib/utils';
 import FormatedDateTime from './FormatedDateTime';
+import ActionsDropdown from './ActionsDropdown';
 
 const Card = ({file}:{file:Models.Document}) => {
  
   return <>
       {/* <h1 className="h1" key={file.$id}>{file.name}</h1> */}
       <Link href={file.url} target="_blank" className='file-card'>
-      <div className='flex justify-center'>
+      <div className='flex justify-between'>
         <Thumbnail type={file.type} extension={file.extension} url={file.url} className="!size-20" imageClassname="!size-11"/>
 
         <div className="flex flex-col items-end justify-between">
-          ActionsDropdown
+       <ActionsDropdown file={file}/>
           <p className='body-1'>{convertFileSize(file.size)}</p>
         </div>
       </div>
