@@ -16,7 +16,6 @@ import { constructDownloadUrl } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -39,7 +38,7 @@ const ActionsDropdown = ({file}:{file:Models.Document}) => {
       // for shared
       // setEmail([])
     }
-    const handleActions =async()=>{}
+    const handleAction =async()=>{}
   // modal
   const renderDialogContent = ()=>{
     if(!action) return null
@@ -63,8 +62,10 @@ const ActionsDropdown = ({file}:{file:Models.Document}) => {
         {/* only those 3 has buttons */}
         {["rename", "delete", "share"].includes(value) && (
           <DialogFooter className="flex flex-col gap-3 md:flex-row ">
-            <Button onClick={closeAllModals}>Cancel</Button>
-            <Button onClick={handleActions}>
+            <Button className="modal-cancel-button" onClick={closeAllModals}>
+              Cancel
+            </Button>
+            <Button className="modal-submit-button" onClick={handleAction}>
               <p className="capitalize">{value}</p>
               {isLoading && (
                 <Image
