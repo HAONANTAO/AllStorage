@@ -25,6 +25,7 @@ import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { renameFile } from '@/lib/actions/file.action';
 import { usePathname } from 'next/navigation';
+import { FileDetails } from './ActionsModalContent';
 const ActionsDropdown = ({ file }: { file: Models.Document }) => {
   const [isModelOpen, setIsModelOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
@@ -60,7 +61,8 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
     if (success) closeAllModals();
     setIsLoading(false);
   };
-  // modal
+
+  // modal 点击后显示的dialog
   const renderDialogContent = () => {
     if (!action) return null;
     // click for sign the value into action
@@ -72,8 +74,8 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
             {label}
           </DialogTitle>
           {/* 添加描述，解决 aria-describedby 警告 */}
-          <DialogDescription>{'dropdown actions'}</DialogDescription>
-          {/* determine */}
+          <DialogDescription>{''}</DialogDescription>
+          {/* 1.rename */}
           {value === 'rename' && (
             <Input
               type="text"
@@ -81,6 +83,7 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
               onChange={(e) => setName(e.target.value)}
             />
           )}
+          {value === 'details' && <FileDetails file={file} />}
         </DialogHeader>
         {/* only those 3 has buttons */}
         {['rename', 'delete', 'share'].includes(value) && (
