@@ -1,5 +1,5 @@
-"use client"
-import React, { useState } from 'react'
+'use client';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import {
   DropdownMenu,
@@ -8,7 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu';
 import { Models } from 'node-appwrite';
 import { actionsDropdownItems } from '@/constants';
 import Link from 'next/link';
@@ -16,42 +16,71 @@ import { constructDownloadUrl } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-const ActionsDropdown = ({file}:{file:Models.Document}) => {
-  const [isModelOpen,setIsModelOpen] = useState(false);
-  const [isDropDownOpen,setIsDropDownOpen] = useState(false);
-  const [action,setAction] = useState<ActionType | null>(null);
-  const [isLoading,setIsLoading] = useState(false)
-  const [name,setName] = useState(file.name)
-
+import { renameFile } from '@/lib/actions/file.action';
+import { usePathname } from 'next/navigation';
+const ActionsDropdown = ({ file }: { file: Models.Document }) => {
+  const [isModelOpen, setIsModelOpen] = useState(false);
+  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+  const [action, setAction] = useState<ActionType | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [name, setName] = useState(file.name);
+  const path = usePathname();
   // clean all states
-    const closeAllModals = ()=>{
-      setIsModelOpen(false)
-      setIsDropDownOpen(false)
-      setAction(null)
-      setName(file.name)
-      // for shared
-      // setEmail([])
+  const closeAllModals = () => {
+    setIsModelOpen(false);
+    setIsDropDownOpen(false);
+    setAction(null);
+    setName(file.name);
+    // for shared
+    // setEmail([])
+  };
+  const handleAction = async () => {
+    if (!action) {
+      return;
     }
-    const handleAction =async()=>{}
+    setIsLoading(true);
+    let success = false;
+    // according the type to actions
+    const actions = {
+      rename: () =>
+        renameFile({ fileId: file.$id, name, extension: file.extension, path }),
+      share: () => console.log('shared'),
+      delete: () => console.log('delete'),
+    };
+    // keyof是关键字
+    // flexible executed！
+    success = await actions[action.value as keyof typeof actions]();
+    if (success) closeAllModals();
+    setIsLoading(false);
+  };
   // modal
-  const renderDialogContent = ()=>{
-    if(!action) return null
+  const renderDialogContent = () => {
+    if (!action) return null;
     // click for sign the value into action
-    const {label,value} = action;
+    const { label, value } = action;
     return (
       <DialogContent className="shad-dialog button">
         <DialogHeader className="flex flex-col gap-3">
           <DialogTitle className="text-center text-light-100">
             {label}
           </DialogTitle>
+          {/* 添加描述，解决 aria-describedby 警告 */}
+          <DialogDescription>
+            {value === 'rename'
+              ? 'Enter the new name below'
+              : value === 'delete'
+                ? 'Confirm deletion of the item'
+                : 'Share this item with others'}
+          </DialogDescription>
           {/* determine */}
-          {value === "rename" && (
+          {value === 'rename' && (
             <Input
               type="text"
               value={name}
@@ -60,7 +89,7 @@ const ActionsDropdown = ({file}:{file:Models.Document}) => {
           )}
         </DialogHeader>
         {/* only those 3 has buttons */}
-        {["rename", "delete", "share"].includes(value) && (
+        {['rename', 'delete', 'share'].includes(value) && (
           <DialogFooter className="flex flex-col gap-3 md:flex-row ">
             <Button className="modal-cancel-button" onClick={closeAllModals}>
               Cancel
@@ -81,7 +110,7 @@ const ActionsDropdown = ({file}:{file:Models.Document}) => {
         )}
       </DialogContent>
     );
-  }
+  };
   return (
     <Dialog open={isModelOpen} onOpenChange={setIsModelOpen}>
       <DropdownMenu open={isDropDownOpen} onOpenChange={setIsDropDownOpen}>
@@ -106,7 +135,7 @@ const ActionsDropdown = ({file}:{file:Models.Document}) => {
                 {
                   setAction(actionItem);
                   if (
-                    ["rename", "share", "delete", "details"].includes(
+                    ['rename', 'share', 'delete', 'details'].includes(
                       actionItem.value,
                     )
                   ) {
@@ -116,7 +145,7 @@ const ActionsDropdown = ({file}:{file:Models.Document}) => {
               }
               key={actionItem.value}>
               {/* 只有download点击直接可以下载 */}
-              {actionItem.value === "download" ? (
+              {actionItem.value === 'download' ? (
                 <Link
                   href={constructDownloadUrl(file.bucketFileId)}
                   download={file.name}
@@ -148,6 +177,6 @@ const ActionsDropdown = ({file}:{file:Models.Document}) => {
       {renderDialogContent()}
     </Dialog>
   );
-}
+};
 
-export default ActionsDropdown
+export default ActionsDropdown;
