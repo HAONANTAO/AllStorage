@@ -72,13 +72,7 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
             {label}
           </DialogTitle>
           {/* 添加描述，解决 aria-describedby 警告 */}
-          <DialogDescription>
-            {value === 'rename'
-              ? 'Enter the new name below'
-              : value === 'delete'
-                ? 'Confirm deletion of the item'
-                : 'Share this item with others'}
-          </DialogDescription>
+          <DialogDescription>{'dropdown actions'}</DialogDescription>
           {/* determine */}
           {value === 'rename' && (
             <Input
