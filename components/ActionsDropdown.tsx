@@ -69,7 +69,18 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
     setIsLoading(false);
   };
 
-  const handleRemoveUser = () => {};
+  // remove the shared email
+  const handleRemoveUser = async (email: string) => {
+    const updateEmails = emails.filter((e) => e !== email);
+    // overwirte
+    const success = await shareFileUsers({
+      fileId: file.$id,
+      emails: updateEmails,
+      path,
+    });
+    if (success) setEmails(updateEmails);
+    closeAllModals();
+  };
 
   // modal 点击后显示的dialog
   const renderDialogContent = () => {
