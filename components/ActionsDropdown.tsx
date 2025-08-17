@@ -25,13 +25,15 @@ import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { renameFile } from '@/lib/actions/file.action';
 import { usePathname } from 'next/navigation';
-import { FileDetails } from './ActionsModalContent';
+import { FileDetails, ShareInput } from './ActionsModalContent';
+
 const ActionsDropdown = ({ file }: { file: Models.Document }) => {
   const [isModelOpen, setIsModelOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const [action, setAction] = useState<ActionType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState(file.name);
+  const [emails, setEmails] = useState([]);
   const path = usePathname();
   // clean all states
   const closeAllModals = () => {
@@ -62,6 +64,8 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
     setIsLoading(false);
   };
 
+  const handleRemoveUser = () => {};
+
   // modal 点击后显示的dialog
   const renderDialogContent = () => {
     if (!action) return null;
@@ -84,6 +88,13 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
             />
           )}
           {value === 'details' && <FileDetails file={file} />}
+          {value === 'share' && (
+            <ShareInput
+              file={file}
+              onInputChange={setEmails}
+              onRemove={handleRemoveUser}
+            />
+          )}
         </DialogHeader>
         {/* only those 3 has buttons */}
         {['rename', 'delete', 'share'].includes(value) && (
