@@ -22,8 +22,8 @@ const ImageThumbnail = ({ file }: { file: Models.Document }) => {
 const DetailRow = ({ label, value }: { label: string; value: string }) => {
   return (
     <div className="flex">
-      <p className="file-details-label">{label}</p>
-      <p className="file-details-value">{value}</p>
+      <p className="file-details-label text-left">{label}</p>
+      <p className="file-details-value text-left ">{value}</p>
     </div>
   );
 };
@@ -32,10 +32,12 @@ export const FileDetails = ({ file }: { file: Models.Document }) => {
     <>
       <ImageThumbnail file={file} />
       {/* details */}
-      <DetailRow label="Format:" value={file.extension} />
-      <DetailRow label="Size:" value={convertFileSize(file.size)} />
-      <DetailRow label="Owner:" value={file.owner.fullName} />
-      <DetailRow label="Last edit:" value={formatDateTime(file.$updatedAt)} />
+      <div className="space-y-4 px-2 pt-2">
+        <DetailRow label="Format:" value={file.extension} />
+        <DetailRow label="Size:" value={convertFileSize(file.size)} />
+        <DetailRow label="Owner:" value={file.owner.fullName} />
+        <DetailRow label="Last edit:" value={formatDateTime(file.$updatedAt)} />
+      </div>
     </>
   );
 };
