@@ -67,7 +67,7 @@ export const ShareInput = ({ file, onInputChange, onRemove }: Props) => {
         <div className="pt-4">
           <div className="flex justify-between ">
             <p className="subtitle-2 text-light-100">Shared with</p>
-            {/* TODO:存疑 */}
+            {/* shared users store in the file.user */}
             <p className="subtitle-2 text-light-200">
               {file.users.length} users
             </p>
@@ -76,14 +76,18 @@ export const ShareInput = ({ file, onInputChange, onRemove }: Props) => {
 
         {/* render users shared */}
         <ul className="pt-2">
-          {file.users.map((email) => (
+          {file.users.map((email: string) => (
             <li key={email} className="flex items-center justify-between gap-2">
               <p className="subtitle-2">{email}</p>
-              <Button onClick={()=>onRemove(email)}>
+              <Button onClick={() => onRemove(email)}>
                 {/* remove the shared */}
-                <Image src="/assets/icons/remove.svg" alt='remove' width={24}
-                height={24}
-                className='remove-icon'/>
+                <Image
+                  src="/assets/icons/remove.svg"
+                  alt="remove"
+                  width={24}
+                  height={24}
+                  className="remove-icon"
+                />
               </Button>
             </li>
           ))}

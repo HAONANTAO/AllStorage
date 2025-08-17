@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { renameFile } from '@/lib/actions/file.action';
+import { renameFile, shareFileUsers } from '@/lib/actions/file.action';
 import { usePathname } from 'next/navigation';
 import { FileDetails, ShareInput } from './ActionsModalContent';
 
@@ -54,7 +54,12 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
     const actions = {
       rename: () =>
         renameFile({ fileId: file.$id, name, extension: file.extension, path }),
-      share: () => console.log('shared'),
+      share: () =>
+        shareFileUsers({
+          fileId: file.$id,
+          emails,
+          path,
+        }),
       delete: () => console.log('delete'),
     };
     // keyof是关键字
@@ -77,7 +82,7 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
           <DialogTitle className="text-center text-light-100">
             {label}
           </DialogTitle>
-          {/* 添加描述，解决 aria-describedby 警告 */}
+          {/* add this description to solve the  aria-describedby warning */}
           <DialogDescription>{''}</DialogDescription>
           {/* 1.rename */}
           {value === 'rename' && (
