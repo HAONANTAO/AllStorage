@@ -3,6 +3,9 @@ import React from 'react';
 import Thumbnail from './Thumbnail';
 import FormatedDateTime from './FormatedDateTime';
 import { convertFileSize, formatDateTime } from '@/lib/utils';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
+import Image from 'next/image';
 
 const ImageThumbnail = ({ file }: { file: Models.Document }) => {
   return (
@@ -48,7 +51,44 @@ interface Props {
   onRemove: (email: string) => void;
 }
 export const ShareInput = ({ file, onInputChange, onRemove }: Props) => {
-  return <>
-  <ImageThumbnail file={file}/>
-  </>
+  return (
+    <>
+      <ImageThumbnail file={file} />
+      <div className="share-wrapper">
+        <p className="subtitle-2 pl-2 text-light-100">
+          Share file with other users
+        </p>
+        <Input
+          className="share-input-field"
+          type="email"
+          placeholder="enter the email"
+          onChange={(e) => onInputChange(e.target.value.trim().split(','))}
+        />
+        <div className="pt-4">
+          <div className="flex justify-between ">
+            <p className="subtitle-2 text-light-100">Shared with</p>
+            {/* TODO:存疑 */}
+            <p className="subtitle-2 text-light-200">
+              {file.users.length} users
+            </p>
+          </div>
+        </div>
+
+        {/* render users shared */}
+        <ul className="pt-2">
+          {file.users.map((email) => (
+            <li key={email} className="flex items-center justify-between gap-2">
+              <p className="subtitle-2">{email}</p>
+              <Button onClick={()=>onRemove(email)}>
+                {/* remove the shared */}
+                <Image src="/assets/icons/remove.svg" alt='remove' width={24}
+                height={24}
+                className='remove-icon'/>
+              </Button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
+  );
 };
