@@ -149,3 +149,27 @@ export const shareFileUsers = async ({
     handleError(error, 'failed to shared file');
   }
 };
+
+export const deleteFile = async ({
+  fileId,
+  bucketFileId,
+  path,
+}: DeleteFileProps) => {
+  const { databases, storage } = await createAdminClient();
+  try {
+    //  delete from database
+    const deletedFile = await databases.deleteDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.bucketId,
+      fileId,
+    );
+    if (deletedFile) {
+      await storage.deleteFile(appwriteConfig.bucketId, bucketFileId);
+      // then delete from storage
+    }
+    revalidatePath(path);
+    return parseStringify(deletedFile);
+  } catch (error) {
+    handleError(error, 'failed to delete the file');
+  }
+};
