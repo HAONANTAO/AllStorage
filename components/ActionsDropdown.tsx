@@ -23,7 +23,11 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { renameFile, shareFileUsers } from '@/lib/actions/file.action';
+import {
+  deleteFile,
+  renameFile,
+  shareFileUsers,
+} from '@/lib/actions/file.action';
 import { usePathname } from 'next/navigation';
 import { FileDetails, ShareInput } from './ActionsModalContent';
 
@@ -60,7 +64,8 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
           emails,
           path,
         }),
-      delete: () => console.log('delete'),
+      delete: () =>
+        deleteFile({ fileId: file.$id, path, bucketFileId: file.bucketFileId }),
     };
     // keyof是关键字
     // flexible executed！

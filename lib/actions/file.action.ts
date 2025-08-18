@@ -160,7 +160,7 @@ export const deleteFile = async ({
     //  delete from database
     const deletedFile = await databases.deleteDocument(
       appwriteConfig.databaseId,
-      appwriteConfig.bucketId,
+      appwriteConfig.filesCollectionId,
       fileId,
     );
     if (deletedFile) {
@@ -168,7 +168,7 @@ export const deleteFile = async ({
       // then delete from storage
     }
     revalidatePath(path);
-    return parseStringify(deletedFile);
+    return parseStringify({ status: 'success' });
   } catch (error) {
     handleError(error, 'failed to delete the file');
   }
