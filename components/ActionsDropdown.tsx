@@ -42,7 +42,7 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
     setAction(null);
     setName(file.name);
     // for shared
-    // setEmail([])
+    setEmails([]);
   };
   const handleAction = async () => {
     if (!action) {
@@ -158,6 +158,8 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
                 // 如果点击了 dialog给新的model弹窗
                 {
                   setAction(actionItem);
+                  // Issue solved the overlays
+                  setIsDropDownOpen(false);
                   if (
                     ['rename', 'share', 'delete', 'details'].includes(
                       actionItem.value,
