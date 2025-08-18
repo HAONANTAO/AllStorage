@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-declare type FileType = "document" | "image" | "video" | "audio" | "other";
+declare type FileType = 'document' | 'image' | 'video' | 'audio' | 'other';
 
 declare interface ActionType {
   label: string;
@@ -33,6 +33,7 @@ declare interface RenameFileProps {
 }
 declare interface UpdateFileUsersProps {
   fileId: string;
+  initEmail: string[];
   emails: string[];
   path: string;
 }

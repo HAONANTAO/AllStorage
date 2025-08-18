@@ -130,17 +130,20 @@ export const renameFile = async ({
 
 export const shareFileUsers = async ({
   fileId,
+  initEmail,
   emails,
   path,
 }: UpdateFileUsersProps) => {
   const { databases } = await createAdminClient();
+  const mergedEmails = [...initEmail, ...emails];
+
   try {
     const updatedFile = await databases.updateDocument(
       appwriteConfig.databaseId,
       appwriteConfig.filesCollectionId,
       fileId,
       {
-        users: emails,
+        users: mergedEmails,
       },
     );
     revalidatePath(path);

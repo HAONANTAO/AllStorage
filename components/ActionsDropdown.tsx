@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import {
   DropdownMenu,
@@ -38,7 +38,12 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState(file.name);
   const [emails, setEmails] = useState<string[]>([]);
+  const [initEmail, setInitEmail] = useState<string[]>([]);
   const path = usePathname();
+
+  useEffect(() => {
+    setInitEmail(file.users);
+  }, [file.users]);
   // clean all states
   const closeAllModals = () => {
     setIsModelOpen(false);
@@ -61,6 +66,7 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
       share: () =>
         shareFileUsers({
           fileId: file.$id,
+          initEmail,
           emails,
           path,
         }),
@@ -80,6 +86,7 @@ const ActionsDropdown = ({ file }: { file: Models.Document }) => {
     // overwirte
     const success = await shareFileUsers({
       fileId: file.$id,
+      initEmail,
       emails: updateEmails,
       path,
     });
