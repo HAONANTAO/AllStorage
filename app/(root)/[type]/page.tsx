@@ -1,13 +1,17 @@
 import Card from '@/components/Card';
 import Sort from '@/components/Sort';
 import { getFiles } from '@/lib/actions/file.action';
+import { getFileTypesParams } from '@/lib/utils';
+
 import { Models } from 'node-appwrite';
 import React from 'react'
 
 // 根据 URL 动态显示一个标题，比如 /music → 页面上显示 "Music"。
 const page = async({params}:SearchParamProps) => {
-  const files = await getFiles();
-  const type = (await params)?.type as string || ""
+    const type = ((await params)?.type as string) || '';
+    const types = getFileTypesParams(type) as FileType[]
+  const files = await getFiles({types});
+
   return (
     <div className="page-container">
       <section className="w-full">

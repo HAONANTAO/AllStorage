@@ -69,7 +69,7 @@ export const uploadFile = async ({
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const createQueries = (currentUser: any) => {
+const createQueries = (currentUser: any, types: string[]) => {
   const queries = [
     // 查找 owner 等于这个用户 ID 或者 users 包含这个用户的邮箱 的文档。
     Query.or([
@@ -77,11 +77,13 @@ const createQueries = (currentUser: any) => {
       Query.contains('users', currentUser.email),
     ]),
   ];
-  // TODO:search sort limits...
+  // WHERE type IN (...)）
+  if (types.length > 0) queries.push(Query.equal('type', types));
+
   return queries;
 };
 
-export const getFiles = async () => {
+export const getFiles = async ({ types = [] }: GetFilesProps) => {
   const { databases } = await createAdminClient();
   try {
     const currentUser = await getCurrentUser();
@@ -89,7 +91,7 @@ export const getFiles = async () => {
       throw new Error('user not found');
     }
     // search query creation
-    const queries = createQueries(currentUser);
+    const queries = createQueries(currentUser, types);
 
     // get files
     const files = await databases.listDocuments(
