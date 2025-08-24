@@ -3,7 +3,7 @@
 import { createAdminClient } from '../appwrite';
 import { InputFile } from 'node-appwrite/file';
 import { appwriteConfig } from '../appwrite/config';
-import { ID, Query } from 'node-appwrite';
+import { ID, Models, Query } from 'node-appwrite';
 import { constructFileUrl, getFileType, parseStringify } from '../utils';
 import { revalidatePath } from 'next/cache';
 import { getCurrentUser } from './user.actions';
@@ -70,7 +70,7 @@ export const uploadFile = async ({
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createQueries = (
-  currentUser: any,
+  currentUser: Models.Document,
   types: string[],
   searchText: string,
   sort: string,
@@ -79,19 +79,19 @@ const createQueries = (
   const queries = [
     // 查找 owner 等于这个用户 ID 或者 users 包含这个用户的邮箱 的文档。
     Query.or([
-      Query.equal('owner', currentUser.$id),
-      Query.contains('users', currentUser.email),
+      Query.equal("owner", currentUser.$id),
+      Query.contains("users", currentUser.email),
     ]),
   ];
   // WHERE  IN (...)）
-  if (types.length > 0) queries.push(Query.equal('type', types));
-  if (searchText.length > 0) queries.push(Query.contains('name', searchText));
+  if (types.length > 0) queries.push(Query.equal("type", types));
+  if (searchText.length > 0) queries.push(Query.contains("name", searchText));
   if (limit) queries.push(Query.limit(limit));
 
   // split first then sort!
-  const [sortBy, orderBy] = sort.split('-');
+  const [sortBy, orderBy] = sort.split("-");
   queries.push(
-    orderBy === 'asc' ? Query.orderAsc(sortBy) : Query.orderDesc(sortBy),
+    orderBy === "asc" ? Query.orderAsc(sortBy) : Query.orderDesc(sortBy),
   );
 
   return queries;
