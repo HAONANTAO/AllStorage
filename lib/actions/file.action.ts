@@ -1,6 +1,6 @@
 'use server';
 
-import { createAdminClient } from '../appwrite';
+import { createAdminClient, createSessionClient } from '../appwrite';
 import { InputFile } from 'node-appwrite/file';
 import { appwriteConfig } from '../appwrite/config';
 import { ID, Models, Query } from 'node-appwrite';
@@ -79,24 +79,69 @@ const createQueries = (
   const queries = [
     // 查找 owner 等于这个用户 ID 或者 users 包含这个用户的邮箱 的文档。
     Query.or([
-      Query.equal("owner", currentUser.$id),
-      Query.contains("users", currentUser.email),
+      Query.equal('owner', currentUser.$id),
+      Query.contains('users', currentUser.email),
     ]),
   ];
   // WHERE  IN (...)）
-  if (types.length > 0) queries.push(Query.equal("type", types));
-  if (searchText.length > 0) queries.push(Query.contains("name", searchText));
+  if (types.length > 0) queries.push(Query.equal('type', types));
+  if (searchText.length > 0) queries.push(Query.contains('name', searchText));
   if (limit) queries.push(Query.limit(limit));
 
   // split first then sort!
-  const [sortBy, orderBy] = sort.split("-");
+  const [sortBy, orderBy] = sort.split('-');
   queries.push(
-    orderBy === "asc" ? Query.orderAsc(sortBy) : Query.orderDesc(sortBy),
+    orderBy === 'asc' ? Query.orderAsc(sortBy) : Query.orderDesc(sortBy),
   );
 
   return queries;
 };
 
+// ============================== TOTAL FILE SPACE USED
+export async function getTotalSpaceUsed() {
+  try {
+    const { databases } = await createSessionClient();
+    const currentUser = await getCurrentUser();
+    if (!currentUser) throw new Error('User is not authenticated.');
+
+    // list all files
+    const files = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      [Query.equal('owner', [currentUser.$id])],
+    );
+
+    // init
+    const totalSpace = {
+      image: { size: 0, latestDate: '' },
+      document: { size: 0, latestDate: '' },
+      video: { size: 0, latestDate: '' },
+      audio: { size: 0, latestDate: '' },
+      other: { size: 0, latestDate: '' },
+      used: 0,
+      all: 2 * 1024 * 1024 * 1024 /* 2GB available bucket storage = Default*/,
+    };
+
+    // calculation
+    files.documents.forEach((file) => {
+      const fileType = file.type as FileType;
+      totalSpace[fileType].size += file.size;
+      totalSpace.used += file.size;
+
+      // iterate the latest datetime
+      if (
+        !totalSpace[fileType].latestDate ||
+        new Date(file.$updatedAt) > new Date(totalSpace[fileType].latestDate)
+      ) {
+        totalSpace[fileType].latestDate = file.$updatedAt;
+      }
+    });
+
+    return parseStringify(totalSpace);
+  } catch (error) {
+    handleError(error, 'Error calculating total space used:, ');
+  }
+}
 export const getFiles = async ({
   types = [],
   searchText = '',

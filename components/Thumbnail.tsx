@@ -10,7 +10,7 @@ interface Props{
   className?:string
 }
 
-const Thumbnail = ({type,extension,url="",imageClassname,className}:Props) => {
+export const Thumbnail = ({type,extension,url="",imageClassname,className}:Props) => {
   // svg hard show in thubmnail
   const isImage= type==="image" && extension !== "svg"
   return (
