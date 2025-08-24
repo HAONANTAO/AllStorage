@@ -5,6 +5,7 @@ import { Input } from './ui/input';
 import { useSearchParams } from 'next/navigation';
 import { getFiles } from '@/lib/actions/file.action';
 import { Models } from 'node-appwrite';
+import Thumbnail from './Thumbnail';
 
 // Whole page search function
 const Search = () => {
@@ -46,7 +47,21 @@ const Search = () => {
         {open && (
           <ul className="search-result">
             {results.length > 0 ? (
-              results.map((file) => <li key={file.$id}>{file.name}</li>)
+              results.map((file) => (
+                <li
+                  className="flex items-center justify-between"
+                  key={file.$id}>
+                  <div className="flex cursor-pointer items-center gap-4">
+                    <Thumbnail
+                      type={file.type}
+                      extension={file.extension}
+                      url={file.url}
+                      className="size-9 min-w-9 "
+                    />
+                    {file.name}
+                  </div>
+                </li>
+              ))
             ) : (
               <p className="empty-result">No files found</p>
             )}
