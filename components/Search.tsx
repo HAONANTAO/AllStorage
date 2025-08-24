@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Input } from './ui/input';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getFiles } from '@/lib/actions/file.action';
 import { Models } from 'node-appwrite';
 import Thumbnail from './Thumbnail';
@@ -16,8 +16,15 @@ const Search = () => {
   const [results, setResults] = useState<Models.Document[]>([]);
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const path = usePathname();
   useEffect(() => {
     const fetchFiles = async () => {
+      if (!query) {
+        setResults([]);
+        setOpen(false);
+        // returning back to the page
+        return router.push(path.replace(searchParams.toString(), ''));
+      }
       const files = await getFiles({ searchText: query });
       setResults(files.documents);
       setOpen(true);
@@ -39,7 +46,7 @@ const Search = () => {
     // and open this items in router
     // TODO:没输入的时候点击可以跳转 但是不是单独显示
     router.push(
-      `/${file.type === 'video' ? 'media' : file.type + 's'}?query=${query}`,
+      `/${file.type === 'video' || 'audio' ? 'media' : file.type + 's'}?query=${query}`,
     );
   };
   return (
