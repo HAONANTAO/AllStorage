@@ -96,6 +96,7 @@ const FileupLoader = ({ ownerId, accountId, className }: Props) => {
     },
     [ownerId, accountId, path],
   );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
