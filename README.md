@@ -66,16 +66,16 @@ With a scalable codebase, responsive interface, and clean UI/UX, AllStorage prov
 Include screenshots:
 
 <p align="center">
-  <img src="Features0.png" width="900" height="400" alt="Demo 1"/>
+  <img src="Features0.png" width="700" height="450" alt="Demo 1"/>
 </p>
 <p align="center">
-  <img src="Features1.png" width="900" height="400" alt="Demo 1"/>
+  <img src="Features1.png" width="700" height="450" alt="Demo 1"/>
 </p>
 <p align="center">
-  <img src="Features2.png" width="900" height="400" alt="Demo 1"/>
+  <img src="Features2.png" width="700" height="450" alt="Demo 1"/>
 </p>
 <p align="center">
-  <img src="Features3.png" width="900" height="400" alt="Demo 1"/>
+  <img src="Features3.png" width="700" height="450" alt="Demo 1"/>
 </p>
 
 ---
