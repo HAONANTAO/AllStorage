@@ -116,6 +116,7 @@ export const getCurrentUser = async () => {
 export const signOutUser = async () => {
   const { account } = await createSessionClient();
   try {
+    // 删除的对象是当前 session 的记录（session ID 对应的用户信息、权限等）
     // Delete the current session
     await account.deleteSession('current');
 
