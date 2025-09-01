@@ -1,6 +1,6 @@
 # 🚀 Storage It All
 
-🎬[Live Demo](https://all-storage.vercel.app/)
+🎬[Live Web](https://all-storage.vercel.app/)
 
 AllStorage is a modern, full-featured storage management and file sharing platform that allows users to upload, organise, and share files effortlessly. Built with Next.js 15, TypeScript, TailwindCSS, and Appwrite, it features secure passwordless authentication via email OTP, real-time data management, and a modular, maintainable architecture designed for both personal use and enterprise-level storage solutions.
 
@@ -16,12 +16,12 @@ With a scalable codebase, responsive interface, and clean UI/UX, AllStorage prov
 ## Table of Contents
 
 - [Description](#description)
+- [Highlights](#highlights)
 - [Features](#features)
-- [Demo](#demo)
 - [Technology Stack](#technology-stack)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
-- [Deployment ](#deployment)
+- [Deployment](#deployment)
 - [Contributing](#contributing)
 - [Contact](#contact)
 - [License](#license)
@@ -50,6 +50,15 @@ With a scalable codebase, responsive interface, and clean UI/UX, AllStorage prov
 - Enable real-time collaboration and easy sharing.
 - Demonstrate best practices in full-stack web development for developers.
 
+## ✨Highlights
+
+- Independently implemented file upload & sharing  
+- Designed folder structure & large file handling  
+- **Maximum single file upload:** >2GB  
+- **Real-time sync latency:** <1s on average  
+- Successfully tested with **100+ files** by friends/internal users  
+- Secure passwordless authentication via **email OTP**  
+- Modular, maintainable architecture suitable for personal & enterprise use  
 ---
 
 ## ⚡Features
@@ -80,7 +89,7 @@ Include screenshots:
 
 ---
 
-## ⚙️Technology Stack
+## ⚙Technology Stack
 
 ### Frontend
 
@@ -101,7 +110,7 @@ Include screenshots:
 
 ---
 
-## 🗂️Project Structure
+## Project Structure
 
 AllStorage/
  │
@@ -173,7 +182,7 @@ npm run dev
 
 Open http://localhost:3000 in your browser to see the app.
 
-## ☁️Deployment
+## Deployment
 
 You can deploy **AllStorage** to any platform that supports Next.js, such as **Vercel** or **Netlify**.
 
